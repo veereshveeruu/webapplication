@@ -1,0 +1,42 @@
+pipeline {
+  agent any
+  environment {
+    IMAGE = 'veeruuuu/webapplication'
+    TAG = "latest"
+  }
+  stages {
+    stage('Clone') {
+      steps {
+        git 'https://github.com/veereshveeruu/webapplication.git'
+      }
+    }
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t $IMAGE:$TAG .'
+      }
+    }
+    stage('Push Docker Image') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+          sh 'echo $PASS | docker login -u $USER --password-stdin'
+          sh 'docker push $IMAGE:$TAG'
+        }
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        sh 'kubectl apply -f k8s/deployment.yaml'
+        sh 'kubectl apply -f k8s/service.yaml'
+      }
+    }
+  }
+  post {
+    success {
+      slackSend(channel: '#ci-cd', message: "✅ Build & Deployment succeeded for $IMAGE:$TAG")
+    }
+    failure {
+      slackSend(channel: '#ci-cd', message: "❌ Build or Deployment failed for $IMAGE:$TAG")
+    }
+  }
+}
+

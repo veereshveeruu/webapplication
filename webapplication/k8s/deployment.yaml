@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapplication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapplication
+  template:
+    metadata:
+      labels:
+        app: webapplication
+    spec:
+      containers:
+      - name: webapplication
+        image: veeruuuu/webapplication:latest
+        ports:
+        - containerPort: 3000
+
