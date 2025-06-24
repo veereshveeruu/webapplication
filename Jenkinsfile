@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    IMAGE = 'yourdockerhubusername/my-webapp'
+    IMAGE = 'veeruuuu/webapplication:latest'
     TAG = "latest"
   }
  stage('Clone') {
@@ -39,3 +39,4 @@ pipeline {
     }
   }
 }
+
