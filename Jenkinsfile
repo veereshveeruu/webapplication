@@ -38,5 +38,4 @@ pipeline {
       slackSend(channel: '#ci-cd', message: "❌ Deployment failed.")
     }
   }
-}
 
