@@ -6,7 +6,7 @@ pipeline {
   }
  stage('Clone') {
     steps {
-        git branch: 'main', credentialsId: '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', url: 'https://github.com/veereshveeruu/webapplication.git'
+        git branch: 'main', credentialsId: 'veereshveeruu', url: 'https://github.com/veereshveeruu/webapplication.git'
     }
 }
 
