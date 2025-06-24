@@ -4,6 +4,7 @@ pipeline {
   environment {
     IMAGE = 'veeruuuu/webapplication'
     TAG = 'latest'
+    KUBECONFIG = '/var/lib/jenkins/.kube/config'
   }
 
   stages {
@@ -36,13 +37,13 @@ pipeline {
     }
   }
 
-  post {
-    success {
-      slackSend(channel: '#ci-cd', message: "✅ Deployed successfully!")
-    }
-    failure {
-      slackSend(channel: '#ci-cd', message: "❌ Deployment failed.")
-    }
+ post {
+  success {
+    slackSend(channel: '#ci-cd', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-token')
   }
+  failure {
+    slackSend(channel: '#ci-cd', message: "❌ Deployment failed.", tokenCredentialId: 'slack-token')
+  }
+}
 }
 
