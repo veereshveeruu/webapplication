@@ -1,20 +1,24 @@
 pipeline {
   agent any
+
   environment {
-    IMAGE = 'veeruuuu/webapplication:latest'
-    TAG = "latest"
+    IMAGE = 'veeruuuu/webapplication'
+    TAG = 'latest'
   }
- stage('Clone') {
-    steps {
+
+  stages {
+    stage('Clone') {
+      steps {
         git branch: 'main', credentialsId: 'veereshveeruu', url: 'https://github.com/veereshveeruu/webapplication.git'
+      }
     }
-}
 
     stage('Build Docker') {
       steps {
         sh 'docker build -t $IMAGE:$TAG .'
       }
     }
+
     stage('Push Docker') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
@@ -23,6 +27,7 @@ pipeline {
         }
       }
     }
+
     stage('Deploy to K8s') {
       steps {
         sh 'kubectl apply -f k8s/deployment.yaml'
@@ -30,6 +35,7 @@ pipeline {
       }
     }
   }
+
   post {
     success {
       slackSend(channel: '#ci-cd', message: "✅ Deployed successfully!")
@@ -38,4 +44,5 @@ pipeline {
       slackSend(channel: '#ci-cd', message: "❌ Deployment failed.")
     }
   }
+}
 
