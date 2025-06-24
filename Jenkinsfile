@@ -1,21 +1,21 @@
 pipeline {
   agent any
   environment {
-    IMAGE = 'veeruuuu/webapplication'
+    IMAGE = 'yourdockerhubusername/my-webapp'
     TAG = "latest"
   }
-  stages {
-    stage('Clone') {
-      steps {
-        git 'https://github.com/veereshveeruu/webapplication.git'
-      }
+ stage('Clone') {
+    steps {
+        git branch: 'main', credentialsId: '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', url: 'https://github.com/veereshveeruu/webapplication.git'
     }
-    stage('Build Docker Image') {
+}
+
+    stage('Build Docker') {
       steps {
         sh 'docker build -t $IMAGE:$TAG .'
       }
     }
-    stage('Push Docker Image') {
+    stage('Push Docker') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
           sh 'echo $PASS | docker login -u $USER --password-stdin'
@@ -23,7 +23,7 @@ pipeline {
         }
       }
     }
-    stage('Deploy to Kubernetes') {
+    stage('Deploy to K8s') {
       steps {
         sh 'kubectl apply -f k8s/deployment.yaml'
         sh 'kubectl apply -f k8s/service.yaml'
@@ -32,11 +32,10 @@ pipeline {
   }
   post {
     success {
-      slackSend(channel: '#ci-cd', message: "✅ Build & Deployment succeeded for $IMAGE:$TAG")
+      slackSend(channel: '#ci-cd', message: "✅ Deployed successfully!")
     }
     failure {
-      slackSend(channel: '#ci-cd', message: "❌ Build or Deployment failed for $IMAGE:$TAG")
+      slackSend(channel: '#ci-cd', message: "❌ Deployment failed.")
     }
   }
 }
-
