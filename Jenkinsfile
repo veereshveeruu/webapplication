@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
   agent any
 
   environment {
@@ -33,7 +33,10 @@ pipeline {
       steps {
         script {
           echo "🚀 Deploying to Kubernetes"
-          withEnv(["KUBECONFIG=/var/lib/jenkins/.kube/config"]) {
+          withEnv([
+            'KUBECONFIG=/var/lib/jenkins/.kube/config',
+            'MINIKUBE_HOME=/var/lib/jenkins'
+          ]) {
             sh 'kubectl apply -f k8s/deployment.yaml'
           }
         }
@@ -43,10 +46,18 @@ pipeline {
 
   post {
     success {
-      slackSend(channel: '#all-infy-2', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-bot-token')
+      slackSend(
+        channel: '#all-infy-2',
+        message: "✅ Deployment Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        tokenCredentialId: 'slack-bot-token'
+      )
     }
     failure {
-      slackSend(channel: '#all-infy-2', message: "❌ Deployment failed.", tokenCredentialId: 'slack-bot-token')
+      slackSend(
+        channel: '#all-infy-2',
+        message: "❌ Deployment Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        tokenCredentialId: 'slack-bot-token'
+      )
     }
   }
 }
