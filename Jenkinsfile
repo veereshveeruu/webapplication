@@ -1,4 +1,4 @@
-pipeline { 
+pipeline {
   agent any
 
   environment {
@@ -48,14 +48,14 @@ pipeline {
     success {
       slackSend(
         channel: '#all-infy-2',
-        message: "✅ Deployment Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        message: "✅ Deployed successfully!",
         tokenCredentialId: 'slack-bot-token'
       )
     }
     failure {
       slackSend(
         channel: '#all-infy-2',
-        message: "❌ Deployment Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        message: "❌ Deployment failed.",
         tokenCredentialId: 'slack-bot-token'
       )
     }
