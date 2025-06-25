@@ -28,25 +28,26 @@ pipeline {
         }
       }
     }
+
     stage('Deploy to K8s') {
       steps {
         script {
-            echo "🚀 Deploying to Kubernetes"
-            withEnv(["KUBECONFIG=/var/lib/jenkins/.kube/config"]) {
-                sh 'kubectl apply -f k8s/deployment.yaml'
-            }
+          echo "🚀 Deploying to Kubernetes"
+          withEnv(["KUBECONFIG=/var/lib/jenkins/.kube/config"]) {
+            sh 'kubectl apply -f k8s/deployment.yaml'
+          }
         }
+      }
     }
-
-
+  }
 
   post {
-  success {
-    slackSend(channel: '#all-infy-2', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-bot-token')
+    success {
+      slackSend(channel: '#all-infy-2', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-bot-token')
+    }
+    failure {
+      slackSend(channel: '#all-infy-2', message: "❌ Deployment failed.", tokenCredentialId: 'slack-bot-token')
+    }
   }
-  failure {
-    slackSend(channel: '#all-infy-2', message: "❌ Deployment failed.", tokenCredentialId: 'slack-bot-token')
-  }
-  } 
 }
 
