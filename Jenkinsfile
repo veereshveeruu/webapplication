@@ -39,10 +39,10 @@ pipeline {
 
  post {
   success {
-    slackSend(channel: '#ci-cd', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-token')
+    slackSend(channel: '#all-infy-2', message: "✅ Deployed successfully!", tokenCredentialId: 'slack-bot-token')
   }
   failure {
-    slackSend(channel: '#ci-cd', message: "❌ Deployment failed.", tokenCredentialId: 'slack-token')
+    slackSend(channel: '#all-infy-2', message: "❌ Deployment failed.", tokenCredentialId: 'slack-bot-token')
   }
 }
 }
